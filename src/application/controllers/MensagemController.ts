@@ -1,13 +1,19 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { EmailPort, EmailPortKey } from 'src/infrastructure/ses/port/EmailPort';
+import { MensagemDto } from '../presenters/requests/MensagemDto';
 
 @ApiTags('Mensagem')
 @Controller('mensagem')
 export class MensagemController {
-  constructor() {}
+  constructor(
+    @Inject(EmailPortKey)
+    private readonly email: EmailPort,
+  ) {}
 
   @Post('enviar/e-mail')
-  enviarEmail() {
+  async enviarEmail(@Body() mensagem: MensagemDto) {
+    await this.email.enviarEmail(mensagem);
     return 'ok';
   }
 }

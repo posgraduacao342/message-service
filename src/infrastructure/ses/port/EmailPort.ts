@@ -1,7 +1,7 @@
 import { IMensagemEmail } from '../interfaces/IMensagemEmail';
 
-export const SesServicePortKey = 'SesServicePort';
+export const EmailPortKey = 'EmailPort';
 
-export interface SesServicePort {
+export interface EmailPort {
   enviarEmail(mensagem: IMensagemEmail): Promise<void>;
 }
