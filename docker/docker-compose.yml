@@ -4,12 +4,30 @@ services:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile
+    container_name: message-service-nest
     ports:
       - "3000:3000"
     volumes:
       - ..:/app
     networks:
       - mynetwork
+    depends_on:
+      - rabbit
+  
+  rabbit:
+    container_name: rabbit
+    image: rabbitmq:3-management
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - mynetwork
+
+volumes:
+  rabbit_data:
+    driver: local
 
 networks:
   mynetwork:

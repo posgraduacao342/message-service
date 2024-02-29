@@ -1,6 +1,9 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { EmailPort, EmailPortKey } from 'src/infrastructure/ses/port/EmailPort';
+import {
+  EmailPort,
+  EmailPortKey,
+} from 'src/infrastructure/email/port/EmailPort';
 import { MensagemDto } from '../presenters/requests/MensagemDto';
 
 @ApiTags('Mensagem')
