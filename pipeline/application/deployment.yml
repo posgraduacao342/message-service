@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-message
+  labels:
+    app: tech-challenge-message
+spec:
+  template:
+    metadata:
+      name: tech-challenge-message
+      labels:
+        app: tech-challenge-message
+    spec:
+      containers:
+        - name: tech-challenge-message-api
+          image: 637423603914.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 40
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "512Mi"
+            requests:
+              cpu: "0.2"
+              memory: "256Mi"
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-message-secret
+                  key: DATABASE_URL
+            - name: MERCADO_PAGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-message-secret
+                  key: MERCADO_PAGO_URL
+            - name: MERCADO_PAGO_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-message-secret
+                  key: MERCADO_PAGO_TOKEN
+            - name: WEBHOOK_MP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-message-secret
+                  key: WEBHOOK_MP_URL
+  replicas: 4
+  selector:
+    matchLabels:
+      app: tech-challenge-message
