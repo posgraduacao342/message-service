@@ -30,26 +30,21 @@ spec:
               cpu: "0.2"
               memory: "256Mi"
           env:
-            - name: DATABASE_URL
+            - name: RESEND_KEY
               valueFrom:
                 secretKeyRef:
                   name: tech-challenge-message-secret
-                  key: DATABASE_URL
-            - name: MERCADO_PAGO_URL
+                  key: RESEND_KEY
+            - name: EMAIL_DEFAULT
               valueFrom:
                 secretKeyRef:
                   name: tech-challenge-message-secret
-                  key: MERCADO_PAGO_URL
-            - name: MERCADO_PAGO_TOKEN
+                  key: EMAIL_DEFAULT
+            - name: AMQP_URL
               valueFrom:
                 secretKeyRef:
                   name: tech-challenge-message-secret
-                  key: MERCADO_PAGO_TOKEN
-            - name: WEBHOOK_MP_URL
-              valueFrom:
-                secretKeyRef:
-                  name: tech-challenge-message-secret
-                  key: WEBHOOK_MP_URL
+                  key: AMQP_URL
   replicas: 4
   selector:
     matchLabels:
