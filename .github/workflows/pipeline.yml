@@ -79,15 +79,15 @@ jobs:
 
       - name: Generate Secret.yaml
         run: |
-          echo "apiVersion: v1" > pipeline/Secret.yaml
-          echo "kind: Secret" >> pipeline/Secret.yaml
-          echo "metadata:" >> pipeline/Secret.yaml
-          echo "  name: tech-challenge-message-secret" >> pipeline/Secret.yaml
-          echo "type: Opaque" >> pipeline/Secret.yaml
-          echo "data:" >> pipeline/Secret.yaml
-          echo "  RESEND_KEY: $RESEND_KEY" >> pipeline/Secret.yaml
-          echo "  EMAIL_DEFAULT: $EMAIL_DEFAULT" >> pipeline/Secret.yaml
-          echo "  AMQP_URL: $AMQP_URL" >> pipeline/Secret.yaml
+          echo "apiVersion: v1" > pipeline/application/Secret.yaml
+          echo "kind: Secret" >> pipeline/application/Secret.yaml
+          echo "metadata:" >> pipeline/application/Secret.yaml
+          echo "  name: tech-challenge-message-secret" >> pipeline/application/Secret.yaml
+          echo "type: Opaque" >> pipeline/application/Secret.yaml
+          echo "data:" >> pipeline/application/Secret.yaml
+          echo "  RESEND_KEY: $RESEND_KEY" >> pipeline/application/Secret.yaml
+          echo "  EMAIL_DEFAULT: $EMAIL_DEFAULT" >> pipeline/application/Secret.yaml
+          echo "  AMQP_URL: $AMQP_URL" >> pipeline/application/Secret.yaml
 
       - name: Configure AWS Credentials
         run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
