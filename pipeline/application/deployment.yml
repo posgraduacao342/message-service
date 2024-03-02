@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: tech-challenge-message-api
-          image: 637423603914.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
+          image: 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
           ports:
             - containerPort: 3000
           livenessProbe:

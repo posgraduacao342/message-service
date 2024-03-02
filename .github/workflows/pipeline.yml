@@ -12,29 +12,29 @@ on:
       - reopened
 
 jobs:
-  sonar:
-    name: Build and analyze
-    runs-on: ubuntu-latest
+  # sonar:
+  #   name: Build and analyze
+  #   runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18'
 
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+  #     - name: Install Dependencies
+  #       run: yarn install --frozen-lockfile
 
-      # - name: Test and coverage
-      #   run: yarn test:cov
+  #     # - name: Test and coverage
+  #     #   run: yarn test:cov
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #     - name: SonarCloud Scan
+  #       uses: SonarSource/sonarcloud-github-action@master
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
     name: Build and Publish Docker Image
@@ -51,22 +51,18 @@ jobs:
         run: |
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ecr-user
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile ecr-user
-
-          # Adicione esta parte para incluir a sessão
-          aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }} --profile ecr-user
-
           aws configure set region us-east-1 --profile ecr-user
-          aws ecr get-login-password --region us-east-1 --profile ecr-user | docker login --username AWS --password-stdin 637423603914.dkr.ecr.us-east-1.amazonaws.com
+          aws ecr get-login-password --region us-east-1 --profile ecr-user | docker login --username AWS --password-stdin 851725563168.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build Docker Image
         id: build-image
         run: |
-          docker build -t 637423603914.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest -f Dockerfile .
-          docker tag 637423603914.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest 637423603914.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
+          docker build -t 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest -f Dockerfile .
+          docker tag 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
 
       - name: Push Docker Image to ECR
         run: |
-          docker push 637423603914.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
+          docker push 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
         
   deploy:
     name: Deploy to Kubernetes
@@ -78,8 +74,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Set up environment variables
+        run: echo "RESEND_KEY=${{ secrets.RESEND_KEY }}" >> $GITHUB_ENV && echo "EMAIL_DEFAULT=${{ secrets.EMAIL_DEFAULT }}" >> $GITHUB_ENV && echo "AMQP_URL=${{ secrets.AMQP_URL }}" >> $GITHUB_ENV
+
+      - name: Generate Secret.yaml
+        run: |
+          echo "apiVersion: v1" > Secret.yaml
+          echo "kind: Secret" >> Secret.yaml
+          echo "metadata:" >> Secret.yaml
+          echo "  name: tech-challenge-message-secret" >> Secret.yaml
+          echo "type: Opaque" >> Secret.yaml
+          echo "data:" >> Secret.yaml
+          echo "  RESEND_KEY: $RESEND_KEY" >> Secret.yaml
+          echo "  EMAIL_DEFAULT: $EMAIL_DEFAULT" >> Secret.yaml
+          echo "  AMQP_URL: $AMQP_URL" >> Secret.yaml
+
       - name: Configure AWS Credentials
-        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
+        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         env:
           AWS_DEFAULT_REGION: us-east-1
 
