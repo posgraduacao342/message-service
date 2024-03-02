@@ -88,6 +88,9 @@ jobs:
           echo "  RESEND_KEY: $RESEND_KEY" >> pipeline/application/secret.yaml
           echo "  EMAIL_DEFAULT: $EMAIL_DEFAULT" >> pipeline/application/secret.yaml
           echo "  AMQP_URL: $AMQP_URL" >> pipeline/application/secret.yaml
+      
+      - name: Verificar arquivo criado
+        run: cat pipeline/application/secret.yaml
 
       - name: Configure AWS Credentials
         run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
