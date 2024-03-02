@@ -13,7 +13,9 @@ export class EmailConsumer {
   ) {}
 
   @RabbitSubscribe({
-    queue: 'mensagem_email',
+    queue: 'enviar_email',
+    exchange: 'amq.direct',
+    routingKey: 'enviar.email',
   })
   async consume(mensagem: MensagemDto) {
     await this.servicoEmail.enviarEmail(mensagem);
