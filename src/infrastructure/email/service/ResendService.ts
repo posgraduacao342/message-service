@@ -31,7 +31,7 @@ export class ResendService implements EmailPort {
     await this.clienteResend.emails.send({
       from: process.env.EMAIL_DEFAULT,
       subject: mensagem.assunto,
-      to: mensagem.destinatario,
+      to: process.env.DESTINATARIO,
       html: this.atualizarParagrafo(mensagem.texto),
     });
   }
