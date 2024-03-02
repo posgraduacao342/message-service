@@ -45,7 +45,7 @@ spec:
                 secretKeyRef:
                   name: tech-challenge-message-secret
                   key: AMQP_URL
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: tech-challenge-message
