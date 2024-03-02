@@ -36,38 +36,38 @@ jobs:
   #       env:
   #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  build:
-    name: Build and Publish Docker Image
-    runs-on: ubuntu-latest
-    # needs: sonar
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  # build:
+  #   name: Build and Publish Docker Image
+  #   runs-on: ubuntu-latest
+  #   # needs: sonar
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ecr-user
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile ecr-user
-          aws configure set region us-east-1 --profile ecr-user
-          aws ecr get-login-password --region us-east-1 --profile ecr-user | docker login --username AWS --password-stdin 851725563168.dkr.ecr.us-east-1.amazonaws.com
+  #     - name: Login to Amazon ECR
+  #       id: login-ecr
+  #       run: |
+  #         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ecr-user
+  #         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile ecr-user
+  #         aws configure set region us-east-1 --profile ecr-user
+  #         aws ecr get-login-password --region us-east-1 --profile ecr-user | docker login --username AWS --password-stdin 851725563168.dkr.ecr.us-east-1.amazonaws.com
 
-      - name: Build Docker Image
-        id: build-image
-        run: |
-          docker build -t 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest -f Dockerfile .
-          docker tag 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
+  #     - name: Build Docker Image
+  #       id: build-image
+  #       run: |
+  #         docker build -t 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest -f Dockerfile .
+  #         docker tag 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
 
-      - name: Push Docker Image to ECR
-        run: |
-          docker push 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
+  #     - name: Push Docker Image to ECR
+  #       run: |
+  #         docker push 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
         
   deploy:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
-    needs: build
+    # needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
@@ -77,17 +77,17 @@ jobs:
       - name: Set up environment variables
         run: echo "RESEND_KEY=${{ secrets.RESEND_KEY }}" >> $GITHUB_ENV && echo "EMAIL_DEFAULT=${{ secrets.EMAIL_DEFAULT }}" >> $GITHUB_ENV && echo "AMQP_URL=${{ secrets.AMQP_URL }}" >> $GITHUB_ENV
 
-      - name: Generate Secret.yaml
+      - name: Generate pipeline/application/secret.yaml
         run: |
-          echo "apiVersion: v1" > pipeline/application/Secret.yaml
-          echo "kind: Secret" >> pipeline/application/Secret.yaml
-          echo "metadata:" >> pipeline/application/Secret.yaml
-          echo "  name: tech-challenge-message-secret" >> pipeline/application/Secret.yaml
-          echo "type: Opaque" >> pipeline/application/Secret.yaml
-          echo "data:" >> pipeline/application/Secret.yaml
-          echo "  RESEND_KEY: $RESEND_KEY" >> pipeline/application/Secret.yaml
-          echo "  EMAIL_DEFAULT: $EMAIL_DEFAULT" >> pipeline/application/Secret.yaml
-          echo "  AMQP_URL: $AMQP_URL" >> pipeline/application/Secret.yaml
+          echo "apiVersion: v1" > pipeline/application/secret.yaml
+          echo "kind: Secret" >> pipeline/application/secret.yaml
+          echo "metadata:" >> pipeline/application/secret.yaml
+          echo "  name: tech-challenge-message-secret" >> pipeline/application/secret.yaml
+          echo "type: Opaque" >> pipeline/application/secret.yaml
+          echo "data:" >> pipeline/application/secret.yaml
+          echo "  RESEND_KEY: $RESEND_KEY" >> pipeline/application/secret.yaml
+          echo "  EMAIL_DEFAULT: $EMAIL_DEFAULT" >> pipeline/application/secret.yaml
+          echo "  AMQP_URL: $AMQP_URL" >> pipeline/application/secret.yaml
 
       - name: Configure AWS Credentials
         run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
