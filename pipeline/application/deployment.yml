@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: tech-challenge-message-api
-          image: 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
+          image: 767397892937.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
           ports:
             - containerPort: 3000
           resources:
