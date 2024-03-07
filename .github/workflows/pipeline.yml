@@ -57,12 +57,12 @@ jobs:
       - name: Build Docker Image
         id: build-image
         run: |
-          docker build -t 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest -f Dockerfile .
-          docker tag 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
+          docker build -t 767397892937.dkr.ecr.us-east-1.amazonaws.com/message-service:latest -f Dockerfile .
+          docker tag 767397892937.dkr.ecr.us-east-1.amazonaws.com/message-service:latest 767397892937.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
 
       - name: Push Docker Image to ECR
         run: |
-          docker push 851725563168.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
+          docker push 767397892937.dkr.ecr.us-east-1.amazonaws.com/message-service:latest
         
   deploy:
     name: Deploy to Kubernetes
