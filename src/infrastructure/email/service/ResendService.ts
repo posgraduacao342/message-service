@@ -20,7 +20,6 @@ export class ResendService implements EmailPort {
   `;
 
   constructor() {
-    console.log('RESEND_KEY', process.env.RESEND_KEY);
     this.clienteResend = new Resend(process.env.RESEND_KEY);
   }
 
@@ -29,13 +28,11 @@ export class ResendService implements EmailPort {
   }
 
   async enviarEmail(mensagem: IMensagemEmail): Promise<void> {
-    console.log('EMAIL_DEFAULT', process.env.EMAIL_DEFAULT);
-    console.log('EMAIL_DEFAULT', process.env.EMAIL_DEFAULT);
-    console.log('DESTINATARIO', process.env.DESTINATARIO);
+    const destinario = 'matheusgolminif@gmail.com';
     await this.clienteResend.emails.send({
       from: process.env.EMAIL_DEFAULT,
       subject: mensagem.assunto,
-      to: process.env.DESTINATARIO,
+      to: destinario,
       html: this.atualizarParagrafo(mensagem.texto),
     });
   }
