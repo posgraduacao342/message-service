@@ -16,7 +16,9 @@ export class MensagemController {
 
   @Post('enviar/e-mail')
   async enviarEmail(@Body() mensagem: MensagemDto) {
+    console.log('Controller Iniciado');
     await this.email.enviarEmail(mensagem);
+    console.log('Controller Finalizada');
     return 'ok';
   }
 }

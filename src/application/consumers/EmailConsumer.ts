@@ -18,6 +18,9 @@ export class EmailConsumer {
     routingKey: 'enviar.email',
   })
   async consume(mensagem: MensagemDto) {
+    console.log('Consumer Iniciado');
+    console.log(mensagem);
     await this.servicoEmail.enviarEmail(mensagem);
+    console.log('Consumer Finalizado');
   }
 }
